@@ -1,12 +1,19 @@
 <?php
+// mengimport kode program yang ada didalam database.php
 include 'database.php';
 
+// query sql
 $query = "SELECT * FROM barangs";
+// parameter atau data yang akan dimasukkan ke dalam tanda tanya (?) di query
 $sql = sqlsrv_query($conn, $query);
+// deklarasi variabel barang
 $barangs = [];
 
+// cek apabila eksekusi berhasil
 if ($sql) {
+    // looping untuk mengambil baris data dari hasil query dan dikonversi menjadi array asosiatif dan dimasukkan ke dalam variable $row
     while ($row = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC)) {
+        // setiap baris yang didapat akan di masukkan ke dalam array $barangs
         $barangs[] = $row;
     }
 }
@@ -26,8 +33,11 @@ if ($sql) {
 <body>
     <section class="mx-5 mt-3">
         <?php
+            // mengecek apakah ada value msg di dalam url dengan menggunakan $_get
             if (isset($_GET['msg'])) {
+                // nilai tadi dimasukkan ke variabel $msg untuk di seleksi
                 $msg = htmlspecialchars($_GET['msg']);
+                // seleksi nilai dari variabel, jika sama maka akan di outputkan ke halaman
                 switch ($msg) {
                     case "create":
                         echo "<div class='alert alert-success alert-dismissible fade show'>
@@ -68,14 +78,23 @@ if ($sql) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $i = 1;
+                    <?php 
+                    // deklarasi variabel i
+                    $i = 1;
+
+                    // looping variabel $barangs dari kode php diatas dan digunakan sebagai variabel $barang agar dapat di panggil satu per satu dari kumpulan data
                     foreach ($barangs as $barang) { ?>
                         <tr>
+                            <!-- mengoutputkan variabel i untuk penomoran -->
                             <th scope="row"><?= $i++ ?></th>
+                            <!-- mengoutputkan nilai 'nama' dari variabel barang -->
                             <td><?= $barang['nama'] ?></td>
+                            <!-- mengoutputkan nilai 'deskripsi' dari variabel barang -->
                             <td><?= $barang['deskripsi'] ?></td>
+                            <!-- mengoutputkan nilai 'harga' dari variabel barang lalu diformat agar ada komanya -->
                             <td>Rp <?= number_format($barang['harga']) ?></td>
                             <td class="d-flex">
+                                <!-- link yang menuju ke file update dengan membawa value id di dalam urlnya agar dapat diambil dengan $_GET -->
                                 <a href="update.php?id=<?= $barang['id'] ?>" class="btn btn-primary">
                                     <i class="fa-solid fa-pen-to-square"></i></a>
                                 <div class="mx-1"></div>
